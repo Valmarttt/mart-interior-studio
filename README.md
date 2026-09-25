@@ -21,6 +21,7 @@ Stages 1–4 currently cover the product shell, mock studio flow, generation bou
 - Supabase browser/server clients with cookie session refresh middleware
 - Email login/signup pages and PKCE callback route
 - Projects page and API with ownership delegated to Supabase RLS
+- Protected project detail API for reading, renaming and deleting owner-owned projects
 - Initial PostgreSQL/RLS/storage migration in `supabase/migrations`
 
 The visual room preview is a clearly illustrative CSS composition. It does not claim to be an AI-generated transformation.
