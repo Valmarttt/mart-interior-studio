@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAIImageService } from "@/lib/ai";
+import { createClient } from "@/lib/supabase/server";
+import { hasSupabaseEnv } from "@/lib/supabase/config";
 import { validateImageFile, customPromptSchema, generationSettingsSchema } from "@/lib/validation/generation";
 
 export const runtime = "nodejs";
@@ -20,8 +22,18 @@ export async function POST(request: Request) {
     const customPrompt = customPromptSchema.parse(typeof rawPrompt === "string" ? rawPrompt : "");
     const validatedImage = await validateImageFile(image);
     const provider = process.env.AI_PROVIDER || "mock";
-    if (provider === "openai" && process.env.ENABLE_REAL_GENERATION !== "true") {
-      return errorResponse("REAL_GENERATION_DISABLED", "Real generation is disabled until authentication and private storage are connected.", requestId, 503);
+    if (provider === "openai") {
+      if (process.env.ENABLE_REAL_GENERATION !== "true") {
+        return errorResponse("REAL_GENERATION_DISABLED", "Real generation is disabled until authentication and private storage are connected.", requestId, 503);
+      }
+      if (!hasSupabaseEnv()) {
+        return errorResponse("SUPABASE_NOT_CONFIGURED", "Real generation requires an authenticated Supabase session.", requestId, 503);
+      }
+      const supabase = await createClient();
+      const { data: claims } = await supabase.auth.getClaims();
+      if (!claims?.claims?.sub) {
+        return errorResponse("UNAUTHENTICATED", "Sign in is required before using real generation.", requestId, 401);
+      }
     }
 
     const result = await createAIImageService().editRoom({ image: validatedImage, settings, customPrompt });

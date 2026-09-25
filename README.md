@@ -14,7 +14,9 @@ Stages 1–4 currently cover the product shell, mock studio flow, generation bou
 - Studio at `/en/studio` and `/ru/studio` with photo validation, settings and responsive preview
 - Explicitly labelled Demo mode with a prepared Before / Demo after comparison
 - Server-side `AIImageService` with mock and OpenAI adapters
+- Real-provider guard requiring Supabase configuration and an authenticated session before any OpenAI call
 - Multipart image validation by MIME, size and file signature
+- No-store `/api/health` endpoint exposing only non-secret runtime readiness information
 - Real provider disabled by default with `ENABLE_REAL_GENERATION=false`
 - Supabase browser/server clients with cookie session refresh middleware
 - Email login/signup pages and PKCE callback route

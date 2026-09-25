@@ -50,7 +50,6 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
     setSuggestionId(copy.suggestions[0]?.id || null);
     setGeneratedUrl(null);
     setResultMode(null);
-    setSuggestionId(null);
     setStatus("idle");
     setError("");
   }
