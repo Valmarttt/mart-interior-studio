@@ -23,6 +23,8 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
   const [resultMode, setResultMode] = useState<"demo" | "real" | null>(null);
   const [error, setError] = useState("");
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const [saveMessage, setSaveMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "ready">("idle");
   const [room, setRoom] = useState(copy.roomTypes[0].id);
   const [style, setStyle] = useState(copy.styles[0].id);
@@ -50,6 +52,8 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
     setSuggestionId(copy.suggestions[0]?.id || null);
     setGeneratedUrl(null);
     setResultMode(null);
+    setSaveStatus("idle");
+    setSaveMessage("");
     setStatus("idle");
     setError("");
   }
@@ -61,6 +65,8 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
     setIsExample(false);
     setGeneratedUrl(null);
     setResultMode(null);
+    setSaveStatus("idle");
+    setSaveMessage("");
     setStatus("idle");
     setError("");
   }
@@ -78,6 +84,8 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
     setPrompt(suggestion.prompt);
     setGeneratedUrl(null);
     setResultMode(null);
+    setSaveStatus("idle");
+    setSaveMessage("");
     setStatus("idle");
     setError("");
   }
@@ -124,6 +132,32 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
     } catch { setError(copy.errors.file); }
   }
 
+  async function saveProject() {
+    if (!file || status !== "ready" || saveStatus !== "idle") return;
+    setSaveStatus("saving");
+    setSaveMessage("");
+    try {
+      const projectResponse = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: `${style} ${room}`, roomType: room }),
+      });
+      const projectData = await projectResponse.json() as { project?: { id: string }; message?: string };
+      if (!projectResponse.ok || !projectData.project) throw new Error(projectData.message || copy.saveError);
+
+      const imageForm = new FormData();
+      imageForm.append("image", file);
+      const imageResponse = await fetch(`/api/projects/${projectData.project.id}/images`, { method: "POST", body: imageForm });
+      const imageData = await imageResponse.json() as { message?: string };
+      if (!imageResponse.ok) throw new Error(imageData.message || copy.saveError);
+      setSaveStatus("saved");
+      setSaveMessage(copy.saveComplete);
+    } catch (requestError) {
+      setSaveStatus("idle");
+      setSaveMessage(requestError instanceof Error ? requestError.message : copy.saveError);
+    }
+  }
+
   const isLiveResult = resultMode === "real";
   const preparedDemoUrl = isExample && suggestionId ? preparedDemoAfterBySuggestion[suggestionId] || null : null;
   const afterUrl = generatedUrl || preparedDemoUrl;
@@ -154,10 +188,11 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
       </section>
 
       <section className="min-w-0" aria-labelledby="studio-preview">
-        <div className="mb-4 flex items-center justify-between gap-4"><div><p className="section-kicker">{copy.preview}</p><h2 id="studio-preview" className="font-display mt-2 text-3xl tracking-[-0.05em]">{status === "ready" ? (isLiveResult ? copy.liveReady : copy.demoReady) : copy.previewHint}</h2></div>{status === "ready" && <div className="hidden items-center gap-2 sm:flex">{downloadUrl ? <Button asChild variant="outline" size="sm"><a href={downloadUrl} download="atelier-ai-room.png"><Download size={14} />{isLiveResult ? copy.downloadImage : copy.download}</a></Button> : <Button variant="outline" size="sm" type="button" disabled><Download size={14} />{copy.download}</Button>}<Button size="sm" type="button"><Check size={14} />{copy.save}</Button></div>}</div>
+        <div className="mb-4 flex items-center justify-between gap-4"><div><p className="section-kicker">{copy.preview}</p><h2 id="studio-preview" className="font-display mt-2 text-3xl tracking-[-0.05em]">{status === "ready" ? (isLiveResult ? copy.liveReady : copy.demoReady) : copy.previewHint}</h2></div>{status === "ready" && <div className="hidden items-center gap-2 sm:flex">{downloadUrl ? <Button asChild variant="outline" size="sm"><a href={downloadUrl} download="atelier-ai-room.png"><Download size={14} />{isLiveResult ? copy.downloadImage : copy.download}</a></Button> : <Button variant="outline" size="sm" type="button" disabled><Download size={14} />{copy.download}</Button>}<Button size="sm" type="button" onClick={saveProject} disabled={saveStatus !== "idle"}><Check size={14} />{saveStatus === "saved" ? copy.saved : saveStatus === "saving" ? copy.saving : copy.save}</Button></div>}</div>
         <div className="surface-card overflow-hidden p-3 sm:p-5">
           {status === "ready" ? <Comparison copy={copy} previewUrl={previewUrl} afterUrl={afterUrl} afterLabel={afterLabel} split={split} onSplit={setSplit} /> : <EmptyPreview copy={copy} previewUrl={previewUrl} />}
         </div>
+        {saveMessage && <p className="mt-3 text-xs text-muted" role="status">{saveMessage}</p>}
         {status === "ready" && <div className="mt-4 flex gap-3 rounded-2xl border border-accent/20 bg-accent/10 p-4 text-xs leading-5 text-ink/70"><Info size={16} className="mt-0.5 shrink-0 text-accent" /><div><p className="font-medium text-ink">{isLiveResult ? copy.liveNotice : copy.mockNotice}</p><p>{isLiveResult ? copy.liveNoticeBody : copy.mockNoticeBody}</p></div></div>}
       </section>
     </div>

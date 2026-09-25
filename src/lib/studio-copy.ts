@@ -43,6 +43,10 @@ export type StudioCopy = {
   suggestionsUse: string;
   suggestions: Array<{ id: string; title: string; description: string; style: string; palette: string; intensity: string; elements: string[]; prompt: string }>;
   save: string;
+  saving: string;
+  saved: string;
+  saveComplete: string;
+  saveError: string;
   errors: { file: string; required: string };
   roomTypes: Array<{ id: string; label: string }>;
   styles: Array<{ id: string; label: string; description: string }>;
@@ -99,6 +103,10 @@ export const studioCopy: Record<Locale, StudioCopy> = {
       { id: "modern-warm", title: "Modern warm", description: "Clean lines, warmer contrast and a more architectural focus.", style: "modern", palette: "neutral", intensity: "full", elements: ["furniture", "walls", "lighting"], prompt: "Create a warm modern room with clean lines, considered contrast, layered lighting and a refined architectural feel." },
     ],
     save: "Save project",
+    saving: "Saving…",
+    saved: "Saved",
+    saveComplete: "Project and original photo saved.",
+    saveError: "The project could not be saved.",
     errors: { file: "Please choose a JPG, PNG or WebP image up to 10 MB.", required: "Add a room photo before creating a direction." },
     roomTypes: [{ id: "living_room", label: "Living room" }, { id: "bedroom", label: "Bedroom" }, { id: "kitchen", label: "Kitchen" }, { id: "bathroom", label: "Bathroom" }, { id: "home_office", label: "Home office" }, { id: "other", label: "Other" }],
     styles: [{ id: "japandi", label: "Japandi", description: "Soft restraint" }, { id: "scandinavian", label: "Scandinavian", description: "Light and lived-in" }, { id: "industrial", label: "Industrial Loft", description: "Honest materials" }, { id: "modern", label: "Modern", description: "Warm clarity" }, { id: "classic", label: "Classic", description: "Timeless proportion" }, { id: "minimalist", label: "Minimalist", description: "Room to breathe" }],
@@ -153,6 +161,10 @@ export const studioCopy: Record<Locale, StudioCopy> = {
       { id: "modern-warm", title: "Тёплый Modern", description: "Чистые линии, выразительный контраст и архитектурный акцент.", style: "modern", palette: "neutral", intensity: "full", elements: ["furniture", "walls", "lighting"], prompt: "Создать тёплый современный интерьер с чистыми линиями, умеренным контрастом, многоуровневым светом и архитектурной выразительностью." },
     ],
     save: "Сохранить проект",
+    saving: "Сохранение…",
+    saved: "Сохранено",
+    saveComplete: "Проект и исходное фото сохранены.",
+    saveError: "Проект не удалось сохранить.",
     errors: { file: "Выберите изображение JPG, PNG или WebP размером до 10 МБ.", required: "Добавьте фотографию комнаты перед созданием варианта." },
     roomTypes: [{ id: "living_room", label: "Гостиная" }, { id: "bedroom", label: "Спальня" }, { id: "kitchen", label: "Кухня" }, { id: "bathroom", label: "Ванная" }, { id: "home_office", label: "Кабинет" }, { id: "other", label: "Другое" }],
     styles: [{ id: "japandi", label: "Japandi", description: "Мягкая сдержанность" }, { id: "scandinavian", label: "Scandinavian", description: "Светло и удобно" }, { id: "industrial", label: "Industrial Loft", description: "Честные материалы" }, { id: "modern", label: "Modern", description: "Тёплая ясность" }, { id: "classic", label: "Classic", description: "Вневременные пропорции" }, { id: "minimalist", label: "Minimalist", description: "Больше воздуха" }],
