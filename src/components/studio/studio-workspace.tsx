@@ -150,6 +150,18 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
       const imageResponse = await fetch(`/api/projects/${projectData.project.id}/images`, { method: "POST", body: imageForm });
       const imageData = await imageResponse.json() as { message?: string };
       if (!imageResponse.ok) throw new Error(imageData.message || copy.saveError);
+      const generationResponse = await fetch(`/api/projects/${projectData.project.id}/generations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          styleId: style,
+          settings: { roomType: room, style, palette, intensity, changeElements: elements, preserveLayout: preserve.preserveLayout, preserveWindowsAndDoors: preserve.preserveOpenings, preserveFurniture: preserve.preserveFurniture },
+          mode: resultMode || "demo",
+          resultImageDataUrl: resultMode === "real" ? generatedUrl : null,
+        }),
+      });
+      const generationData = await generationResponse.json() as { message?: string };
+      if (!generationResponse.ok) throw new Error(generationData.message || copy.saveError);
       setSaveStatus("saved");
       setSaveMessage(copy.saveComplete);
     } catch (requestError) {
