@@ -134,6 +134,7 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
 
   async function saveProject() {
     if (!file || status !== "ready" || saveStatus !== "idle") return;
+    const idempotencyKey = crypto.randomUUID();
     setSaveStatus("saving");
     setSaveMessage("");
     try {
@@ -157,6 +158,7 @@ export function StudioWorkspace({ copy }: StudioWorkspaceProps) {
           styleId: style,
           settings: { roomType: room, style, palette, intensity, changeElements: elements, preserveLayout: preserve.preserveLayout, preserveWindowsAndDoors: preserve.preserveOpenings, preserveFurniture: preserve.preserveFurniture },
           mode: resultMode || "demo",
+          idempotencyKey,
           resultImageDataUrl: resultMode === "real" ? generatedUrl : null,
         }),
       });

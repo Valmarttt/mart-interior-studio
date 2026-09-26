@@ -24,6 +24,7 @@ create table if not exists public.generations (
   status text not null default 'pending' check (status in ('pending', 'processing', 'completed', 'failed', 'cancelled')),
   style_id text not null,
   settings jsonb not null default '{}'::jsonb,
+  idempotency_key text,
   result_image_path text,
   error_code text,
   created_at timestamptz not null default now(),
@@ -66,6 +67,7 @@ create index if not exists projects_user_id_idx on public.projects(user_id);
 create index if not exists projects_updated_at_idx on public.projects(updated_at desc);
 create index if not exists generations_project_id_idx on public.generations(project_id);
 create index if not exists generations_status_created_at_idx on public.generations(status, created_at desc);
+create unique index if not exists generations_project_idempotency_key_idx on public.generations(project_id, idempotency_key) where idempotency_key is not null;
 create index if not exists usage_events_user_id_idx on public.usage_events(user_id);
 create index if not exists subscriptions_user_id_idx on public.subscriptions(user_id);
 

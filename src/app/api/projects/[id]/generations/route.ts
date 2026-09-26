@@ -10,6 +10,7 @@ const generationSchema = z.object({
   styleId: z.string().trim().min(1).max(80),
   settings: generationSettingsSchema,
   mode: z.enum(["demo", "real"]),
+  idempotencyKey: z.string().uuid(),
   resultImageDataUrl: z.string().nullable().optional(),
 });
 
@@ -32,6 +33,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (projectError) return errorResponse("PROJECT_READ_FAILED", "The project could not be loaded.", requestId, 500);
     if (!project) return errorResponse("PROJECT_NOT_FOUND", "The project was not found.", requestId, 404);
 
+    const { data: existingGeneration } = await supabase.from("generations").select("id,status,style_id,settings,result_image_path,created_at,completed_at").eq("project_id", projectId).eq("idempotency_key", body.data.idempotencyKey).maybeSingle();
+    if (existingGeneration) return NextResponse.json({ requestId, generation: existingGeneration, duplicate: true }, { status: 200 });
+
     const generationId = crypto.randomUUID();
     let resultImagePath: string | null = null;
     if (body.data.resultImageDataUrl) {
@@ -49,6 +53,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       status: "completed",
       style_id: body.data.styleId,
       settings: { ...body.data.settings, mode: body.data.mode },
+      idempotency_key: body.data.idempotencyKey,
       result_image_path: resultImagePath,
       completed_at: new Date().toISOString(),
     }).select("id,status,style_id,settings,result_image_path,created_at,completed_at").single();

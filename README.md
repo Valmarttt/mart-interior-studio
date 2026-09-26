@@ -24,6 +24,8 @@ Stages 1–4 currently cover the product shell, mock studio flow, generation bou
 - Protected project detail API for reading, renaming and deleting owner-owned projects
 - Project save flow that uploads the original image only to the private `project-images` bucket
 - Generation history API that records saved settings and can privately store a real generated result image
+- Protected generation status, download and enabled-styles API routes
+- Idempotent generation-history writes with a project-scoped request key
 - Initial PostgreSQL/RLS/storage migration in `supabase/migrations`
 
 The visual room preview is a clearly illustrative CSS composition. It does not claim to be an AI-generated transformation.
