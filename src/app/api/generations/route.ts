@@ -49,6 +49,9 @@ export async function POST(request: Request) {
     if (error instanceof SyntaxError || error instanceof Error && error.name === "ZodError") return errorResponse("INVALID_REQUEST", "Some generation settings are invalid.", requestId, 400);
     const internalCode = error instanceof Error ? error.message : "GENERATION_FAILED";
     const knownErrors: Record<string, { message: string; status: number }> = {
+      UNSUPPORTED_IMAGE_TYPE: { message: "Use a JPG, PNG or WebP room image.", status: 400 },
+      IMAGE_TOO_LARGE: { message: "The room image must be smaller than 10 MB.", status: 400 },
+      INVALID_IMAGE_CONTENT: { message: "The uploaded file is not a valid room image.", status: 400 },
       OPENAI_API_KEY_MISSING: { message: "The OpenAI provider is not configured on the server.", status: 503 },
       OPENAI_IMAGE_MISSING: { message: "The image provider returned no image.", status: 502 },
       AI_PROVIDER_UNSUPPORTED: { message: "The configured image provider is unsupported.", status: 503 },
