@@ -54,3 +54,5 @@ npm run build
 ## Next stages
 
 To connect Supabase, copy `.env.example` to `.env.local`, add the project URL and publishable key, then apply the migration in `supabase/migrations` through the Supabase SQL Editor. Real generation remains disabled until authentication, private storage and server-side limits are connected end to end.
+
+For the production setup sequence, use [`docs/production-checklist.md`](docs/production-checklist.md).
