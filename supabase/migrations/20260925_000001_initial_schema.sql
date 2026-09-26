@@ -115,6 +115,8 @@ drop policy if exists "styles_read_enabled" on public.styles;
 create policy "styles_read_enabled" on public.styles for select using (enabled = true);
 drop policy if exists "usage_events_owner_read" on public.usage_events;
 create policy "usage_events_owner_read" on public.usage_events for select using (auth.uid() = user_id);
+drop policy if exists "usage_events_owner_insert" on public.usage_events;
+create policy "usage_events_owner_insert" on public.usage_events for insert with check (auth.uid() = user_id);
 drop policy if exists "plans_read_enabled" on public.plans;
 create policy "plans_read_enabled" on public.plans for select using (enabled = true);
 drop policy if exists "subscriptions_owner_read" on public.subscriptions;
