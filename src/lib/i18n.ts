@@ -7,6 +7,7 @@ export type Dictionary = {
     projects: string;
     pricing: string;
     signIn: string;
+    signOut: string;
     cta: string;
     language: string;
   };
@@ -47,7 +48,7 @@ export type Dictionary = {
 
 export const dictionaries = {
   en: {
-    header: { studio: "Studio", projects: "Projects", pricing: "Pricing", signIn: "Sign in", cta: "Create design", language: "Language" },
+    header: { studio: "Studio", projects: "Projects", pricing: "Pricing", signIn: "Sign in", signOut: "Sign out", cta: "Create design", language: "Language" },
     hero: {
       eyebrow: "Your room, reimagined",
       title: "Make space for a better way of living.",
@@ -86,7 +87,7 @@ export const dictionaries = {
     footer: { tagline: "Interior ideas with a human point of view.", product: "Product", company: "Company", legal: "Legal", rights: "© 2026 Atelier AI. Built for thoughtful spaces." },
   },
   ru: {
-    header: { studio: "Студия", projects: "Проекты", pricing: "Тарифы", signIn: "Войти", cta: "Создать дизайн", language: "Язык" },
+    header: { studio: "Студия", projects: "Проекты", pricing: "Тарифы", signIn: "Войти", signOut: "Выйти", cta: "Создать дизайн", language: "Язык" },
     hero: {
       eyebrow: "Ваша комната — заново",
       title: "Больше пространства для жизни.",

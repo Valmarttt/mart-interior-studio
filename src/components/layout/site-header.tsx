@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { ArrowUpRight, Globe2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import { type Dictionary, type Locale, locales } from "@/lib/i18n";
 
-type SiteHeaderProps = { locale: Locale; copy: Dictionary };
+type SiteHeaderProps = { locale: Locale; copy: Dictionary; signedIn: boolean };
 
-export function SiteHeader({ locale, copy }: SiteHeaderProps) {
+export function SiteHeader({ locale, copy, signedIn }: SiteHeaderProps) {
   const alternateLocale = locales.find((item) => item !== locale) ?? "en";
 
   return (
@@ -29,7 +30,7 @@ export function SiteHeader({ locale, copy }: SiteHeaderProps) {
             <Globe2 size={15} strokeWidth={1.7} />
             {alternateLocale.toUpperCase()}
           </Link>
-          <Link className="hidden text-sm font-medium text-muted transition-colors hover:text-ink sm:block" href={`/${locale}/login`}>{copy.header.signIn}</Link>
+          {signedIn ? <SignOutButton label={copy.header.signOut} /> : <Link className="hidden text-sm font-medium text-muted transition-colors hover:text-ink sm:block" href={`/${locale}/login`}>{copy.header.signIn}</Link>}
           <Button asChild size="sm" className="hidden sm:inline-flex">
             <Link href={`/${locale}/studio`}>{copy.header.cta}<ArrowUpRight size={14} /></Link>
           </Button>
