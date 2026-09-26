@@ -25,6 +25,7 @@ Stages 1–4 currently cover the product shell, mock studio flow, generation bou
 - Project save flow that uploads the original image only to the private `project-images` bucket
 - Generation history API that records saved settings and can privately store a real generated result image
 - Protected generation status, download and enabled-styles API routes
+- Seeded style catalog for Japandi, Scandinavian, Industrial Loft, Modern, Classic and Minimalist directions
 - Idempotent generation-history writes with a project-scoped request key
 - Server-side daily real-generation limit with Supabase usage-event accounting (`GENERATION_LIMIT_PER_DAY`, default 10)
 - Configurable OpenAI image size/quality/timeout with health readiness flags that never expose secrets
