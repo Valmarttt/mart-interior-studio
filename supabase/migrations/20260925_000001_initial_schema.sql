@@ -109,6 +109,13 @@ alter table public.usage_events enable row level security;
 alter table public.plans enable row level security;
 alter table public.subscriptions enable row level security;
 
+grant usage on schema public to anon, authenticated;
+grant select on public.styles, public.plans to anon, authenticated;
+grant select, update on public.profiles to authenticated;
+grant select, insert, update, delete on public.projects, public.generations to authenticated;
+grant select, insert on public.usage_events to authenticated;
+grant select on public.subscriptions to authenticated;
+
 drop policy if exists "profiles_select_own" on public.profiles;
 create policy "profiles_select_own" on public.profiles for select using (auth.uid() = id);
 drop policy if exists "profiles_update_own" on public.profiles;
